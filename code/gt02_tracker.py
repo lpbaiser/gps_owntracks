@@ -13,7 +13,6 @@ import time
 import json
 import yaml
 import ssl
-import paho.mqtt.publish as publish
 from crc import CRC_GT02
 
 
@@ -335,12 +334,12 @@ class ThreadedRequestHandler(socketserver.BaseRequestHandler):
 
         done = False
         # mqtt broker information
-        broker = config['mqtt']['broker']
-        port = config['mqtt']['port']
-        mqtt_auth = {
-                     'username': config['mqtt']['username'],
-                     'password': config['mqtt']['password']
-                    }
+        # broker = config['mqtt']['broker']
+        # port = config['mqtt']['port']
+        # mqtt_auth = {
+        #              'username': config['mqtt']['username'],
+        #              'password': config['mqtt']['password']
+        #             }
         if 'tls' in config:
             tls = {
                    'ca_certs': config['tls']['ca_certs']
@@ -400,6 +399,7 @@ class ThreadedRequestHandler(socketserver.BaseRequestHandler):
                                          'vel': info['speed'],
                                          'tst': info['timestamp']
                                          }
+                            log.debug("owntracks: " + str(owntracks))
                             if not info['locked'] or info['satellites'] < 4:
                                 owntracks['acc'] = 10000
                             else:
@@ -408,19 +408,19 @@ class ThreadedRequestHandler(socketserver.BaseRequestHandler):
                                         / info['satellites'])
 
                             # Publish to mqtt
-                            log.debug("Sending via mqtt: " +
-                                      auth['topic'] + " " +
-                                      str(owntracks)
-                                      )
-                            publish.single(
-                                           auth['topic'],
-                                           payload = json.dumps(owntracks),
-                                           tls = tls,
-                                           auth = mqtt_auth,
-                                           hostname = broker,
-                                           port = int(port)
-                                           )
-                            log.debug("Sent successfully")
+                            # log.debug("Sending via mqtt: " +
+                            #           auth['topic'] + " " +
+                            #           str(owntracks)
+                            #           )
+                            # publish.single(
+                            #                auth['topic'],
+                            #                payload = json.dumps(owntracks),
+                            #                tls = tls,
+                            #                auth = mqtt_auth,
+                            #                hostname = broker,
+                            #                port = int(port)
+                            #                )
+                            # log.debug("Sent successfully")
 
                         elif content['protocol'] == 0x13:
                             # Status Information
